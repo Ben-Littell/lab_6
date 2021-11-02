@@ -83,13 +83,15 @@ class Enemies:
         self.e_width = e_width
         self.s_width = s_width
         self.velocity = velocity
+        self.s_place = random.randrange(self.s_width - self.e_width)
 
     def draw_enemies(self):
-        s_place = random.randrange(self.s_width - self.e_width)
-        pygame.draw.rect(screen, BLACK, (s_place, 10, self.e_height, self.e_width))
+        pygame.draw.rect(screen, BLACK, (self.s_place, 10, self.e_height, self.e_width))
 
     def update(self):
-        self.e_height += self.velocity
+        self.e_width += self.velocity
+        # if self.e_height + self.enemy.x>= HEIGHT:
+
 
 
 ##############################################################################
@@ -147,6 +149,7 @@ while running:
                 player1.x_speed = 0
                 player1.y_speed = 0
 
+
     screen.fill(WHITE)
     background.draw_back()
     player1.draw_player()
@@ -155,6 +158,7 @@ while running:
         item.draw_enemies()
         item.update()
     enemy1.draw_enemies()
+    enemy1.update()
     pygame.display.flip()
 
     clock.tick(FPS)
