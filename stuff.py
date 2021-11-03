@@ -21,7 +21,7 @@ HEIGHT = 500
 SIZE = (WIDTH, HEIGHT)
 FPS = 60
 enemy_list = []
-
+velo = 5
 
 ##############################################################################
 class Background:
@@ -113,7 +113,7 @@ clock = pygame.time.Clock()
 background = Background(BLACK, CERULEAN, WHITE, 30)
 player1 = Player(screen, 200, HEIGHT - 80, 30, 30)
 for numb in range(25):
-    enemy = Enemies(10, 10, WIDTH - 10)
+    enemy = Enemies(10, 10, WIDTH - 10, velocity=velo)
     enemy_list.append(enemy)
 enemy1 = Enemies(10, 10, WIDTH)
 ###################################
@@ -172,10 +172,12 @@ while running:
             if numb in enemy_x_r and player1.y <= item.y:
                 collided = True
 
+
     if collided:
         screen.fill(BLACK)
-        pygame.event.wait(500)
-        running = False
+        pygame.event.wait(200)
+
+
 
     pygame.display.flip()
 
