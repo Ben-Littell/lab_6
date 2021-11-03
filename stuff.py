@@ -172,7 +172,6 @@ while running:
             if numb in enemy_x_r and player1.y <= item.y:
                 collided = True
 
-
     if collided:
         screen.fill(BLACK)
         pygame.event.wait(200)
