@@ -78,19 +78,26 @@ class Player:
 
 
 class Enemies:
-    def __init__(self, e_height, e_width, s_width, velocity=5):
+    def __init__(self, e_height, e_width, s_width, y=10, velocity=5):
         self.e_height = e_height
         self.e_width = e_width
         self.s_width = s_width
         self.velocity = velocity
         self.s_place = random.randrange(self.s_width - self.e_width)
+        self.y = y
 
     def draw_enemies(self):
-        pygame.draw.rect(screen, BLACK, (self.s_place, 10, self.e_height, self.e_width))
+        pygame.draw.rect(screen, BLACK, (self.s_place, self.y, self.e_height, self.e_width))
 
     def update(self):
-        self.e_width += self.velocity
-        # if self.e_height + self.enemy.x>= HEIGHT:
+        self.y += self.velocity
+        if self.y >= HEIGHT + 10:
+            self.s_place = random.randrange(self.s_width - self.e_width)
+            self.y = -10
+            self.velocity += 0.1
+            if self.velocity > 10:
+                self.velocity = 10
+        # print(self.velocity)
 
 
 
@@ -104,9 +111,9 @@ pygame.display.set_caption('Collision Detection Intro')
 clock = pygame.time.Clock()
 ###################################
 background = Background(BLACK, CERULEAN, WHITE, 30)
-player1 = Player(screen, 200, HEIGHT - 80, 45, 45)
-for numb in range(50):
-    enemy = Enemies(10, -10, WIDTH - 20)
+player1 = Player(screen, 200, HEIGHT - 80, 30, 30)
+for numb in range(25):
+    enemy = Enemies(10, 10, WIDTH - 10)
     enemy_list.append(enemy)
 enemy1 = Enemies(10, 10, WIDTH)
 ###################################
@@ -114,6 +121,9 @@ enemy1 = Enemies(10, 10, WIDTH)
 running = True
 # game loop
 while running:
+    collided = False
+    enemy_x_r = []
+    player_x_r = []
     # get all mouse, keyboard, controller events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -134,10 +144,10 @@ while running:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
-                player1.x_speed = 10
+                player1.x_speed = 5
                 # player.y_speed = 0
             if event.key == pygame.K_LEFT:
-                player1.x_speed = -10
+                player1.x_speed = -5
                 # player.y_speed = 0
             # if event.key == pygame.K_UP:
             #     player1.y_speed = -5
@@ -149,7 +159,6 @@ while running:
                 player1.x_speed = 0
                 player1.y_speed = 0
 
-
     screen.fill(WHITE)
     background.draw_back()
     player1.draw_player()
@@ -157,8 +166,17 @@ while running:
     for item in enemy_list:
         item.draw_enemies()
         item.update()
-    enemy1.draw_enemies()
-    enemy1.update()
+        for numb in range(item.s_place, item.s_place + item.e_width):
+            enemy_x_r.append(numb)
+        for numb in range(player1.x, player1.x + player1.width):
+            if numb in enemy_x_r and player1.y <= item.y:
+                collided = True
+
+    if collided:
+        screen.fill(BLACK)
+        pygame.event.wait(500)
+        running = False
+
     pygame.display.flip()
 
     clock.tick(FPS)
