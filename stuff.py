@@ -175,6 +175,8 @@ while running:
     if collided:
         screen.fill(BLACK)
         pygame.event.wait(200)
+        for item in enemy_list:
+            item.velocity = 5
 
 
 
