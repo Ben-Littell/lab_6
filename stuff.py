@@ -22,6 +22,8 @@ SIZE = (WIDTH, HEIGHT)
 FPS = 60
 enemy_list = []
 velo = 5
+rounds = 0
+
 
 ##############################################################################
 class Background:
@@ -85,6 +87,7 @@ class Enemies:
         self.velocity = velocity
         self.s_place = random.randrange(self.s_width - self.e_width)
         self.y = y
+        self.rounds = 0
 
     def draw_enemies(self):
         pygame.draw.rect(screen, BLACK, (self.s_place, self.y, self.e_height, self.e_width))
@@ -116,6 +119,9 @@ for numb in range(25):
     enemy = Enemies(10, 10, WIDTH - 10, velocity=velo)
     enemy_list.append(enemy)
 enemy1 = Enemies(10, 10, WIDTH)
+collisions = 3
+font_size1 = 50
+rounds1 = 0
 ###################################
 
 running = True
@@ -158,6 +164,11 @@ while running:
             if event.key == pygame.K_SPACE:
                 player1.x_speed = 0
                 player1.y_speed = 0
+            if collisions <= 0:
+                if event.key == pygame.K_r:
+                    collisions = 3
+                    for item in enemy_list:
+                        item.velocity = 5
 
     screen.fill(WHITE)
     background.draw_back()
@@ -165,18 +176,43 @@ while running:
     player1.update()
     for item in enemy_list:
         item.draw_enemies()
+        if item.y >= HEIGHT:
+            rounds1 += 1
         item.update()
         for numb in range(item.s_place, item.s_place + item.e_width):
             enemy_x_r.append(numb)
         for numb in range(player1.x, player1.x + player1.width):
             if numb in enemy_x_r and player1.y <= item.y:
                 collided = True
+                rounds += 1
+
+    rounds += rounds1 / 50
+    rounds1 = 0
 
     if collided:
-        screen.fill(BLACK)
-        pygame.event.wait(200)
+        collisions -= 1
         for item in enemy_list:
-            item.velocity = 5
+            item.y = -10
+
+    font1 = pygame.font.SysFont('Calibri', 25, True, False)
+    text1 = font1.render(f"Lives {collisions}", True, BLACK)
+    screen.blit(text1, [10, 25])
+    font4 = pygame.font.SysFont('Calibri', 25, True, False)
+    text4 = font4.render(f"Rounds {rounds}", True, BLACK)
+    screen.blit(text4, [500, 25])
+
+    if collisions <= 0:
+        screen.fill(BLACK)
+        font2 = pygame.font.SysFont('Calibri', font_size1, True, False)
+        text2 = font2.render(f"Game Over", True, WHITE)
+        font3 = pygame.font.SysFont('Calibri', 20, True, False)
+        text3 = font3.render(f"Press r to restart", True, WHITE)
+        screen.blit(text2, [225, HEIGHT/2 - font_size1])
+        screen.blit(text3, [225, HEIGHT/2 + 10])
+        for item in enemy_list:
+            item.velocity = 0
+            item.y = -10
+
 
 
 
