@@ -176,15 +176,14 @@ while running:
     player1.update()
     for item in enemy_list:
         item.draw_enemies()
+        item.update()
         if item.y >= HEIGHT:
             rounds1 += 1
-        item.update()
         for numb in range(item.s_place, item.s_place + item.e_width):
             enemy_x_r.append(numb)
         for numb in range(player1.x, player1.x + player1.width):
             if numb in enemy_x_r and player1.y <= item.y:
                 collided = True
-                rounds += 1
 
     rounds += rounds1 / 50
     rounds1 = 0
@@ -193,12 +192,13 @@ while running:
         collisions -= 1
         for item in enemy_list:
             item.y = -10
+        rounds += 1
 
     font1 = pygame.font.SysFont('Calibri', 25, True, False)
     text1 = font1.render(f"Lives {collisions}", True, BLACK)
     screen.blit(text1, [10, 25])
     font4 = pygame.font.SysFont('Calibri', 25, True, False)
-    text4 = font4.render(f"Rounds {rounds}", True, BLACK)
+    text4 = font4.render(f"Rounds {int(rounds)}", True, BLACK)
     screen.blit(text4, [500, 25])
 
     if collisions <= 0:
@@ -209,6 +209,7 @@ while running:
         text3 = font3.render(f"Press r to restart", True, WHITE)
         screen.blit(text2, [225, HEIGHT/2 - font_size1])
         screen.blit(text3, [225, HEIGHT/2 + 10])
+        rounds = 0
         for item in enemy_list:
             item.velocity = 0
             item.y = -10
