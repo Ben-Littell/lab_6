@@ -88,9 +88,10 @@ class Enemies:
         self.s_place = random.randrange(self.s_width - self.e_width)
         self.y = y
         self.rounds = 0
+        self.color = WHITE
 
     def draw_enemies(self):
-        pygame.draw.rect(screen, BLACK, (self.s_place, self.y, self.e_height, self.e_width))
+        pygame.draw.rect(screen, self.color, (self.s_place, self.y, self.e_height, self.e_width))
 
     def update(self):
         self.y += self.velocity
@@ -122,6 +123,7 @@ enemy1 = Enemies(10, 10, WIDTH)
 collisions = 3
 font_size1 = 50
 rounds1 = 0
+background_image = pygame.image.load("background-4_resized.png")
 ###################################
 
 running = True
@@ -171,7 +173,9 @@ while running:
                         item.velocity = 5
 
     screen.fill(WHITE)
-    background.draw_back()
+
+    screen.blit(background_image, [0, 0])
+    # background.draw_back()
     player1.draw_player()
     player1.update()
     for item in enemy_list:
@@ -195,10 +199,10 @@ while running:
         rounds += 1
 
     font1 = pygame.font.SysFont('Calibri', 25, True, False)
-    text1 = font1.render(f"Lives {collisions}", True, BLACK)
+    text1 = font1.render(f"Lives {collisions}", True, WHITE)
     screen.blit(text1, [10, 25])
     font4 = pygame.font.SysFont('Calibri', 25, True, False)
-    text4 = font4.render(f"Rounds {int(rounds)}", True, BLACK)
+    text4 = font4.render(f"Rounds {int(rounds)}", True, WHITE)
     screen.blit(text4, [500, 25])
 
     if collisions <= 0:
