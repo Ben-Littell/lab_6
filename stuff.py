@@ -66,9 +66,11 @@ class Player:
         self.height = height
         self.x_speed = x_speed
         self.y_speed = y_speed
+        self.space_ship = pygame.image.load("Space_ship.png")
 
     def draw_player(self):
-        pygame.draw.rect(self.display, RED, (self.x, self.y, self.width, self.height))
+        # pygame.draw.rect(self.display, RED, (self.x, self.y, self.width, self.height))
+        screen.blit(self.space_ship, [self.x, self.y])
 
     def update(self):
         self.x += self.x_speed
@@ -89,9 +91,11 @@ class Enemies:
         self.y = y
         self.rounds = 0
         self.color = WHITE
+        self.asteroid = pygame.image.load("asteroid.png")
 
     def draw_enemies(self):
-        pygame.draw.rect(screen, self.color, (self.s_place, self.y, self.e_height, self.e_width))
+        # pygame.draw.rect(screen, self.color, (self.s_place, self.y, self.e_height, self.e_width))
+        screen.blit(self.asteroid, [self.s_place, self.y])
 
     def update(self):
         self.y += self.velocity
@@ -102,7 +106,6 @@ class Enemies:
             if self.velocity > 10:
                 self.velocity = 10
         # print(self.velocity)
-
 
 
 ##############################################################################
@@ -124,6 +127,7 @@ collisions = 3
 font_size1 = 50
 rounds1 = 0
 background_image = pygame.image.load("background-4_resized.png")
+collision_sound = pygame.mixer.Sound("rock_breaking.ogg")
 ###################################
 
 running = True
@@ -197,6 +201,7 @@ while running:
         for item in enemy_list:
             item.y = -10
         rounds += 1
+        collision_sound.play()
 
     font1 = pygame.font.SysFont('Calibri', 25, True, False)
     text1 = font1.render(f"Lives {collisions}", True, WHITE)
@@ -211,15 +216,12 @@ while running:
         text2 = font2.render(f"Game Over", True, WHITE)
         font3 = pygame.font.SysFont('Calibri', 20, True, False)
         text3 = font3.render(f"Press r to restart", True, WHITE)
-        screen.blit(text2, [225, HEIGHT/2 - font_size1])
-        screen.blit(text3, [225, HEIGHT/2 + 10])
+        screen.blit(text2, [225, HEIGHT / 2 - font_size1])
+        screen.blit(text3, [225, HEIGHT / 2 + 10])
         rounds = 0
         for item in enemy_list:
             item.velocity = 0
             item.y = -10
-
-
-
 
     pygame.display.flip()
 
