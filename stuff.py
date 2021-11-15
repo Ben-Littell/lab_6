@@ -2,6 +2,9 @@ import pygame
 import math
 import random
 
+# use the arrow keys to move side to side to avoid the falling asteroids
+# 3 lives and you are done, press r to restart
+
 # colors in RGB
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
