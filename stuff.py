@@ -108,6 +108,32 @@ class Enemies:
         # print(self.velocity)
 
 
+class Points:
+    def __init__(self, e_height, e_width, s_width, y=10, velocity=5):
+        self.e_height = e_height
+        self.e_width = e_width
+        self.s_width = s_width
+        self.velocity = velocity
+        self.s_place = random.randrange(self.s_width - self.e_width)
+        self.y = y
+        self.rounds = 0
+        self.color = WHITE
+        self.asteroid = pygame.image.load("coin_1_sheet.png")
+
+    def draw_points(self):
+        # pygame.draw.rect(screen, self.color, (self.s_place, self.y, self.e_height, self.e_width))
+        screen.blit(self.asteroid, [self.s_place, self.y])
+
+    def update(self):
+        self.y += self.velocity
+        if self.y >= HEIGHT + 10:
+            self.s_place = random.randrange(self.s_width - self.e_width)
+            self.y = -10
+            self.velocity += 0.1
+            if self.velocity > 10:
+                self.velocity = 10
+
+
 ##############################################################################
 
 pygame.init()
@@ -126,8 +152,14 @@ enemy1 = Enemies(10, 10, WIDTH)
 collisions = 3
 font_size1 = 50
 rounds1 = 0
+points = 0
+point_collide = False
 background_image = pygame.image.load("background-4_resized.png")
 collision_sound = pygame.mixer.Sound("rock_breaking.ogg")
+points_list = []
+for numb in range(5):
+    point = Points(10, 10, WIDTH - 10, velocity=velo)
+    points_list.append(point)
 ###################################
 
 running = True
@@ -135,6 +167,7 @@ running = True
 while running:
     collided = False
     enemy_x_r = []
+    points_x_r = []
     player_x_r = []
     # get all mouse, keyboard, controller events
     for event in pygame.event.get():
@@ -175,6 +208,8 @@ while running:
                     collisions = 3
                     for item in enemy_list:
                         item.velocity = 5
+                    for item in points_list:
+                        item.velocity = 5
 
     screen.fill(WHITE)
 
@@ -187,11 +222,20 @@ while running:
         item.update()
         if item.y >= HEIGHT:
             rounds1 += 1
+            item.y = -10
         for numb in range(item.s_place, item.s_place + item.e_width):
             enemy_x_r.append(numb)
         for numb in range(player1.x, player1.x + player1.width):
             if numb in enemy_x_r and player1.y <= item.y:
                 collided = True
+    for item in points_list:
+        item.draw_points()
+        item.update()
+        for numb in range(item.s_place, item.s_place + item.e_width):
+            points_x_r.append(numb)
+        for numb in range(player1.x, player1.x + player1.width):
+            if numb in points_x_r and player1.y <= item.y:
+                point_collide = True
 
     rounds += rounds1 / 50
     rounds1 = 0
@@ -203,9 +247,21 @@ while running:
         rounds += 1
         collision_sound.play()
 
+    if point_collide:
+        points += 1
+        point_collide = False
+        for item in points_list:
+            item.y = -10
+        if points >= 4:
+            collisions += 1
+            points = 0
+
     font1 = pygame.font.SysFont('Calibri', 25, True, False)
     text1 = font1.render(f"Lives {collisions}", True, WHITE)
     screen.blit(text1, [10, 25])
+    font2 = pygame.font.SysFont('Calibri', 25, True, False)
+    text2 = font2.render(f"Score: {points}", True, WHITE)
+    screen.blit(text2, [250, 25])
     font4 = pygame.font.SysFont('Calibri', 25, True, False)
     text4 = font4.render(f"Rounds {int(rounds)}", True, WHITE)
     screen.blit(text4, [500, 25])
@@ -219,7 +275,11 @@ while running:
         screen.blit(text2, [225, HEIGHT / 2 - font_size1])
         screen.blit(text3, [225, HEIGHT / 2 + 10])
         rounds = 0
+        points = 0
         for item in enemy_list:
+            item.velocity = 0
+            item.y = -10
+        for item in points_list:
             item.velocity = 0
             item.y = -10
 
