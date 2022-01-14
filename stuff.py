@@ -226,6 +226,7 @@ while running:
         if item.y >= HEIGHT:
             rounds1 += 1
             item.y = -10
+            item.s_place = random.randrange(item.s_width - item.e_width)
         for numb in range(item.s_place, item.s_place + item.e_width):
             enemy_x_r.append(numb)
         for numb in range(player1.x, player1.x + player1.width):
@@ -234,6 +235,10 @@ while running:
     for item in points_list:
         item.draw_points()
         item.update()
+        if item.y >= HEIGHT:
+            rounds1 += 1
+            item.y = -10
+            item.s_place = random.randrange(item.s_width - item.e_width)
         for numb in range(item.s_place, item.s_place + item.e_width):
             points_x_r.append(numb)
         for numb in range(player1.x, player1.x + player1.width):
@@ -247,6 +252,7 @@ while running:
         collisions -= 1
         for item in enemy_list:
             item.y = -10
+            item.s_place = random.randrange(item.s_width - item.e_width)
         rounds += 1
         collision_sound.play()
 
@@ -255,6 +261,7 @@ while running:
         point_collide = False
         for item in points_list:
             item.y = -10
+            item.s_place = random.randrange(item.s_width - item.e_width)
         if points >= 4:
             collisions += 1
             points = 0
